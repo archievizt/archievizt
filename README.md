@@ -26,6 +26,5 @@ do not do them twice.
 [Cicso Enterprise Advanced Infrastructure](https://www.credly.com/badges/52465f7d-ecf4-42b1-a696-170059bb1f92)
 
 
-**Off the clock**
 
-I’m usually getting choked out on a jiu-jitsu mat, bush camping with my fam, or reading Stoics who would not approve of my screen time.
+Off the clock, I’m usually getting choked out on a jiu-jitsu mat, bush camping with my fam, or reading Stoics who would not approve of my screen time.
