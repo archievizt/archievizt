@@ -30,4 +30,4 @@ All verifiable on Credly.
 
 **Off the clock**
 
-Brazilian Jiu-Jitsu, Bush camping with the my Fam, and Reading dead Stoics.
+I’m usually getting choked out on a jiu-jitsu mat, bush camping with my fam, or reading Stoics who would not approve of my screen time.
