@@ -25,8 +25,6 @@ do not do them twice.
 [Cisco Security Specialist](https://www.credly.com/badges/cd480174-94f9-4bbc-83a9-6b7c5ceb7ab5) ·
 [Cicso Enterprise Advanced Infrastructure](https://www.credly.com/badges/52465f7d-ecf4-42b1-a696-170059bb1f92)
 
-All verifiable on Credly.
-
 
 **Off the clock**
 
