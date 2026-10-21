@@ -27,6 +27,7 @@ do not do them twice.
 
 All verifiable on Credly.
 
+
 **Off the clock**
 
-Brazilian jiu-jitsu, backcountry camping, and reading dead Stoics.
+Brazilian Jiu-Jitsu, Backcountry Camping, and Reading Dead Stoics.
