@@ -30,4 +30,4 @@ All verifiable on Credly.
 
 **Off the clock**
 
-Brazilian Jiu-Jitsu, Backcountry Camping, and Reading Dead Stoics.
+Brazilian Jiu-Jitsu, Bush camping with the my Fam, and Reading dead Stoics.
