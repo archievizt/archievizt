@@ -4,7 +4,7 @@ Network and Security Specialist. In it since 2015. I build and secure the
 boring infrastructure everything else sits on, then automate the dull parts so I
 do not do them twice.
 
-> *Paranoid by trade, boring by design.*
+> *Learning by building resilient systems from the ground up.*
 
 **What I'm into right now**
 
