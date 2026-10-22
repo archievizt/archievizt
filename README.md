@@ -1,8 +1,6 @@
 ### <samp>ID: Armando Abeleda Jr.<br>Run as: Archie</samp>
 
-Network and Security Specialist. In it since 2015. I build and secure the
-boring infrastructure everything else sits on, then automate the dull parts so I
-do not do them twice.
+Network & Infrastructure Security. In it for over a decade. I build and secure the boring infrastructure everything else sits on, then automate the dull parts so I don’t do them twice.
 
 > Calm in the chaos. Stoked in the lab.<br>
 > *Learning by building resilient systems from the ground up.*
