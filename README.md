@@ -2,7 +2,7 @@
 
 # Armando Abeleda Jr.
 
-**Network & Infrastructure Security · AI Agents on the Network · Hybrid Cloud**
+**Enterprise Network · Security · Architecture · AI  · Cloud**
 
 *Learning by building resilient systems from the ground up.*
 
@@ -15,7 +15,7 @@
 
 ---
 
-Network and Security Specialist, in it for over a decade. I build and secure the boring infrastructure everything else sits on, then automate the dull parts so I don't do them twice.
+Over a decade securing enterprise networks, now bringing my zero-trust habits to cloud and AI, where agents get read-only access and every change needs a human sign-off.
 
 **What I'm into right now**
 
