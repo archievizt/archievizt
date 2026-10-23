@@ -1,6 +1,6 @@
 <div align="center">
 
-# Armando “Archie” Abeleda Jr.
+# Armando Abeleda Jr.
 
 **Network & Infrastructure Security · AI Agents on the Network · Hybrid Cloud**
 
@@ -9,10 +9,8 @@ Calm in the chaos. Stoked in the lab.<br>
 
 [![Portfolio](https://img.shields.io/badge/Portfolio-181717?style=flat&logo=github&logoColor=white)](https://archievizt.github.io)
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=flat)](https://www.linkedin.com/in/ajrabeleda)
-[![Let's talk](https://img.shields.io/badge/%40%20Let's%20talk-0A66C2?style=flat)](https://www.linkedin.com/in/ajrabeleda)
+[![Let's talk](https://img.shields.io/badge/%40%20Let's%20talk-0A66C2?style=flat)](mailto:hello@archieabeleda.dev)
 
-**Network Administrator at Primacorp Ventures Inc.**<br>
-Network Operation Support · Campus Support · Since June 2023
 
 </div>
 
