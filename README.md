@@ -7,9 +7,9 @@
 Calm in the chaos. Stoked in the lab.<br>
 *Learning by building resilient systems from the ground up.*
 
-[![Portfolio](https://img.shields.io/badge/Portfolio-181717?style=flat&logo=github&logoColor=white)](https://archievizt.github.io)
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=flat)](https://www.linkedin.com/in/ajrabeleda)
-[![Let's talk](https://img.shields.io/badge/%40%20Let's%20talk-0A66C2?style=flat)](mailto:hello@archieabeleda.dev)
+[![Portfolio](https://img.shields.io/badge/Portfolio-000000?style=flat&logo=github&logoColor=white)](https://archievizt.github.io)
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-1B6F9A?style=flat)](https://www.linkedin.com/in/ajrabeleda)
+[![Let's talk](https://img.shields.io/badge/%40%20Let's%20talk-4B8BBE?style=flat)](mailto:hello@archieabeleda.dev)
 
 
 </div>
