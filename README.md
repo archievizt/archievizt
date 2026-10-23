@@ -4,7 +4,6 @@
 
 **Network & Infrastructure Security · AI Agents on the Network · Hybrid Cloud**
 
-Calm in the chaos. Stoked in the lab.<br>
 *Learning by building resilient systems from the ground up.*
 
 [![Portfolio](https://img.shields.io/badge/Portfolio-000000?style=flat&logo=github&logoColor=white)](https://archievizt.github.io)
