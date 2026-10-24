@@ -1,6 +1,6 @@
 """Generate the animated SVGs for the GitHub profile README.
 
-    hello-<theme>.svg     "Hey folks, I'm Archie" types out once, then a hand waves
+    hello-<theme>.svg     "Hey folks, I'm Archie" decodes in, a light sweep crosses it, a hand waves
     laptop-<theme>.svg    a small laptop whose screen fills with code, clears, repeats
     terminal-<theme>.svg  a prompt that loops through commands and short replies
 
@@ -76,31 +76,52 @@ def svg(width: int, height: int, title: str, css: str, body: list[str]) -> str:
     )
 
 
+GLYPHS = "01<>/{}[]#$%&*+=?"
+DECODE_START, DECODE_STAGGER, GLYPH_FRAMES, GLYPH_STEP = 0.3, 0.045, 6, 0.055
+SHINE_EVERY = 6.0
+
+
 def build_hello(theme: dict[str, str]) -> str:
+    """The name decodes in: each letter flickers through tech glyphs, then locks.
+    A light sweep crosses it every few seconds, and the hand waves."""
     css, body = [], []
-    done = HEAD_START + HEAD_STEP * len(HEADLINE)
+    seed = 7
+    last = DECODE_START
     for i, ch in enumerate(HEADLINE):
         if ch == " ":
             continue
-        css.append(f".h{i}{{animation:show 0.01s linear {HEAD_START + HEAD_STEP * i:.3f}s forwards}}")
-        body.append(f'<text class="hc h{i}" x="{X0 + i * HEAD_CW:.1f}" y="{HEAD_Y}">{escape(ch)}</text>')
+        x = X0 + i * HEAD_CW
+        t0 = DECODE_START + i * DECODE_STAGGER
+        for k in range(GLYPH_FRAMES):
+            seed = (seed * 1103515245 + 12345) % 2**31  # fixed sequence, same output every build
+            g = GLYPHS[seed % len(GLYPHS)]
+            css.append(f".g{i}_{k}{{animation:flash {GLYPH_STEP:.3f}s linear {t0 + k * GLYPH_STEP:.3f}s 1}}")
+            body.append(f'<text class="gc g{i}_{k}" x="{x:.1f}" y="{HEAD_Y}">{escape(g)}</text>')
+        locked = t0 + GLYPH_FRAMES * GLYPH_STEP
+        last = max(last, locked)
+        css.append(f".h{i}{{animation:show 0.01s linear {locked:.3f}s forwards}}")
+        body.append(f'<text class="hc h{i}" x="{x:.1f}" y="{HEAD_Y}">{escape(ch)}</text>')
 
-    # Cursor follows the typing, then leaves as the hand arrives.
-    span = done + 0.5
-    steps = "".join(
-        f"{pct(HEAD_START + HEAD_STEP * i, span)}{{transform:translateX({i * HEAD_CW:.1f}px)}}"
-        for i in range(len(HEADLINE) + 1)
-    )
-    css.append(f"@keyframes hmove{{0%{{transform:translateX(0)}}{steps}100%{{transform:translateX({len(HEADLINE) * HEAD_CW:.1f}px)}}}}")
-    css.append(f".cur{{animation:hmove {span:.3f}s steps(1,end) forwards}}")
-    css.append(f".cur rect{{animation:blink 0.9s steps(1,end) infinite, hide 0.01s linear {span:.3f}s forwards}}")
-    body.append(f'<g class="cur"><rect x="{X0}" y="{HEAD_Y - 26}" width="3" height="32" fill="{theme["cursor"]}"/></g>')
+    # Light sweep across the name: a moving gradient band, idle most of the cycle.
+    span = X0 + len(HEADLINE) * HEAD_CW
+    band = 150
+    body.insert(0, (
+        f'<defs><linearGradient id="shine" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="{band}" y2="0" gradientTransform="translate({-band} 0)">'
+        f'<stop offset="0" stop-color="{theme["head"]}"/>'
+        f'<stop offset="0.5" stop-color="{theme["cmd"]}"/>'
+        f'<stop offset="1" stop-color="{theme["head"]}"/>'
+        f'<animateTransform attributeName="gradientTransform" type="translate" '
+        f'values="{-band};{span};{span}" keyTimes="0;0.28;1" dur="{SHINE_EVERY}s" '
+        f'begin="{last + 0.4:.2f}s" repeatCount="indefinite"/>'
+        f'</linearGradient></defs>'
+        f'<rect width="0" height="0" fill="url(#shine)"/>'
+    ))
 
-    # Waving hand: appears after the name, waves, rests, waves again.
+    # Waving hand: arrives once the name has locked in.
     hx = X0 + (len(HEADLINE) + 1) * HEAD_CW
     css.append(
         ".wave{opacity:0;transform-box:fill-box;transform-origin:70% 85%;"
-        f"animation:show 0.01s linear {span:.3f}s forwards, wave 3s ease-in-out {span:.3f}s infinite}}"
+        f"animation:show 0.01s linear {last:.3f}s forwards, wave 3s ease-in-out {last:.3f}s infinite}}"
         "@keyframes wave{0%{transform:rotate(0)}8%{transform:rotate(16deg)}16%{transform:rotate(-8deg)}"
         "24%{transform:rotate(16deg)}32%{transform:rotate(-4deg)}40%{transform:rotate(12deg)}"
         "50%,100%{transform:rotate(0)}}"
@@ -109,12 +130,14 @@ def build_hello(theme: dict[str, str]) -> str:
 
     base = (
         f"text{{white-space:pre}}"
-        f".hc{{font-family:{MONO};font-size:{HEAD_FS}px;font-weight:700;fill:{theme['head']};opacity:0}}"
+        f".hc,.gc{{font-family:{MONO};font-size:{HEAD_FS}px;font-weight:700;opacity:0}}"
+        f".hc{{fill:url(#shine)}}"
+        f".gc{{fill:{theme['prompt']}}}"
         f".wave{{font-family:{EMOJI};font-size:{HEAD_FS}px}}"
+        "@keyframes flash{0%,100%{opacity:1}}"
     )
-    reduced = REDUCED.format(show=".hc,.wave")
+    reduced = REDUCED.format(show=".hc,.wave").replace("{opacity:1}", "{opacity:1;fill:" + theme["head"] + "}")
     return svg(HELLO_W, HELLO_H, f"{HEADLINE} {WAVE}", base + COMMON + "".join(css) + reduced, body)
-
 
 def build_terminal(theme: dict[str, str]) -> str:
     """Each command and reply pair is centred as a block, so short pairs sit in the middle too."""
