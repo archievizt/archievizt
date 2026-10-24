@@ -32,4 +32,4 @@ Over a decade securing enterprise networks, now bringing my zero-trust habits to
 <br>
 <br>
 
-*Learning by building resilient systems from the ground up.*
+<picture><source media="(prefers-color-scheme: dark)" srcset="assets/mesh-dark.svg"><img src="assets/mesh-light.svg" alt="" height="26" align="absmiddle"></picture> <picture><source media="(prefers-color-scheme: dark)" srcset="assets/bricks-dark.svg"><img src="assets/bricks-light.svg" alt="" height="24" align="absmiddle"></picture> *Learning by building resilient systems from the ground up.*

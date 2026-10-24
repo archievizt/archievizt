@@ -3,6 +3,8 @@
     hello-<theme>.svg     "Hey folks, I'm Archie" decodes in, a light sweep crosses it, a hand waves
     laptop-<theme>.svg    a small laptop whose screen fills with code, clears, repeats
     terminal-<theme>.svg  a prompt that loops through commands and short replies
+    mesh-<theme>.svg      a tiny network: a link fails and the packet reroutes
+    bricks-<theme>.svg    three bricks stack up from the ground, then reset
 
 Pure SVG + CSS keyframes. No scripts, no external fonts or images, so they render
 inside GitHub's image proxy with no third-party dependency. Characters sit on a fixed
@@ -259,6 +261,75 @@ def build_laptop(theme_name: str) -> str:
     return svg(64, 43, "A laptop typing code", base + COMMON + "".join(css) + reduced, body)
 
 
+MESH_LINK = {"dark": "#5F6B76", "light": "#A9B4BD"}
+MESH_NODE = {"dark": "#56A4DC", "light": "#2371A9"}
+MESH_OK, MESH_FAIL = "#1BA48D", "#D9534F"
+
+
+def _path_keyframes(name: str, pts: list[tuple[float, float]], t_on: float, t_off: float, total: float) -> str:
+    """Move a dot through `pts` between t_on and t_off, hidden outside that window."""
+    eps = 0.001
+    frames = [f"0%,{pct(t_on - eps, total)}{{opacity:0;transform:translate({pts[0][0]}px,{pts[0][1]}px)}}"]
+    for n, (x, y) in enumerate(pts):
+        t = t_on + (t_off - t_on) * n / (len(pts) - 1)
+        frames.append(f"{pct(t, total)}{{opacity:1;transform:translate({x}px,{y}px)}}")
+    frames.append(f"{pct(t_off + eps, total)},100%{{opacity:0;transform:translate({pts[-1][0]}px,{pts[-1][1]}px)}}")
+    return f"@keyframes {name}{{{''.join(frames)}}}"
+
+
+def build_mesh(theme_name: str) -> str:
+    """A tiny four-node mesh. A packet crosses the top path, that link fails,
+    the packet reroutes along the bottom, then the link comes back."""
+    a, b, c, d = (5, 14), (20, 4), (20, 24), (35, 14)
+    total = 6.0
+    link, node = MESH_LINK[theme_name], MESH_NODE[theme_name]
+    css = [
+        _path_keyframes("top", [a, b, d], 0.3, 1.9, total),
+        _path_keyframes("bottom", [a, c, d], 2.9, 4.5, total),
+        f"@keyframes fail{{0%,{pct(2.0, total)}{{stroke:{link};opacity:1}}"
+        f"{pct(2.05, total)},{pct(2.6, total)}{{stroke:{MESH_FAIL};opacity:1}}"
+        f"{pct(2.7, total)},{pct(4.8, total)}{{stroke:{MESH_FAIL};opacity:.25}}"
+        f"{pct(5.2, total)},100%{{stroke:{link};opacity:1}}}}",
+        f".pt{{animation:top {total}s linear infinite}}",
+        f".pb{{animation:bottom {total}s linear infinite}}",
+        f".bd{{animation:fail {total}s linear infinite}}",
+        "@media (prefers-reduced-motion:reduce){*{animation:none!important}.pt,.pb{display:none}}",
+    ]
+    links = [(a, b, ""), (a, c, ""), (c, d, ""), (b, c, ""), (b, d, "bd")]
+    body = [
+        f'<line class="{cls}" x1="{p[0]}" y1="{p[1]}" x2="{q[0]}" y2="{q[1]}" stroke="{link}" stroke-width="1.6" stroke-linecap="round"/>'
+        for p, q, cls in links
+    ]
+    body += [f'<circle cx="{x}" cy="{y}" r="3.2" fill="{node}"/>' for x, y in (a, b, c, d)]
+    body.append(f'<circle class="pt" r="2.8" fill="{MESH_OK}" opacity="0"/>')
+    body.append(f'<circle class="pb" r="2.8" fill="{MESH_OK}" opacity="0"/>')
+    return svg(40, 28, "A small network that reroutes around a failed link", "".join(css), body)
+
+
+BRICK_COLOURS = ["#2371A9", "#12806E", "#C98A1B"]
+
+
+def build_bricks(theme_name: str) -> str:
+    """Three bricks drop in from the bottom up, hold, then fade and start again."""
+    total = 4.5
+    css, body = [], []
+    for n in range(3):
+        y = 22 - n * 8
+        x = 4 + (n % 2) * 3
+        col = BRICK_COLOURS[n]
+        on = 0.2 + n * 0.45
+        css.append(
+            f"@keyframes b{n}{{0%,{pct(on, total)}{{opacity:0;transform:translateY(-12px)}}"
+            f"{pct(on + 0.35, total)},{pct(3.6, total)}{{opacity:1;transform:translateY(0)}}"
+            f"{pct(4.1, total)},100%{{opacity:0;transform:translateY(0)}}}}"
+            f".b{n}{{animation:b{n} {total}s cubic-bezier(.3,1.4,.5,1) infinite}}"
+        )
+        studs = "".join(f'<rect x="{x + sx}" y="{y - 2}" width="4" height="2.4" rx=".8" fill="{col}"/>' for sx in (3, 12))
+        body.append(f'<g class="b{n}" opacity="0">{studs}<rect x="{x}" y="{y}" width="19" height="7" rx="1.5" fill="{col}"/></g>')
+    css.append("@media (prefers-reduced-motion:reduce){*{animation:none!important}g{opacity:1}}")
+    return svg(30, 30, "Bricks stacking up from the ground", "".join(css), body)
+
+
 def main(out_dir: str) -> None:
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
@@ -266,6 +337,8 @@ def main(out_dir: str) -> None:
         (out / f"hello-{name}.svg").write_text(build_hello(theme), encoding="utf-8")
         (out / f"terminal-{name}.svg").write_text(build_terminal(theme), encoding="utf-8")
         (out / f"laptop-{name}.svg").write_text(build_laptop(name), encoding="utf-8")
+        (out / f"mesh-{name}.svg").write_text(build_mesh(name), encoding="utf-8")
+        (out / f"bricks-{name}.svg").write_text(build_bricks(name), encoding="utf-8")
 
 
 if __name__ == "__main__":
