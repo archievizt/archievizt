@@ -47,6 +47,7 @@ HELLO_W, HELLO_H = 460, 56
 LINE_FS, LINE_CW = 16, 9.6
 CMD_Y, OUT_Y = 20, 48
 TERM_W, TERM_H = 500, 58
+TERM_ALIGN = "left"  # "left" or "center": where each command and reply pair sits
 LOOP_DELAY = 0.8
 TYPE_STEP, OUT_PAUSE, HOLD, GAP = 0.075, 0.35, 2.6, 0.35
 
@@ -140,7 +141,7 @@ def build_hello(theme: dict[str, str]) -> str:
     return svg(HELLO_W, HELLO_H, f"{HEADLINE} {WAVE}", base + COMMON + "".join(css) + reduced, body)
 
 def build_terminal(theme: dict[str, str]) -> str:
-    """Each command and reply pair is centred as a block, so short pairs sit in the middle too."""
+    """Each command and reply pair is laid out as a block, left-aligned or centred (TERM_ALIGN)."""
     css, body = [], []
     widest = max(max(len(PROMPT) + 1 + len(c), len(o)) for c, o in PAIRS) * LINE_CW
     if widest > TERM_W - 2:
@@ -158,7 +159,7 @@ def build_terminal(theme: dict[str, str]) -> str:
         typed = s + len(cmd) * TYPE_STEP
         end = typed + OUT_PAUSE + HOLD
         block = max(len(PROMPT) + 1 + len(cmd), len(out)) * LINE_CW
-        bx = (TERM_W - block) / 2
+        bx = (TERM_W - block) / 2 if TERM_ALIGN == "center" else X0
         px = bx + (len(PROMPT) + 1) * LINE_CW
 
         name = f"p{k}"
