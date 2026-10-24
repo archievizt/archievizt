@@ -41,7 +41,7 @@ X0 = 4
 # Headline image
 HEAD_FS, HEAD_CW, HEAD_Y = 30, 18.0, 40
 HEAD_START, HEAD_STEP = 0.3, 0.07
-HELLO_W, HELLO_H = 460, 56
+HELLO_W, HELLO_H = 440, 56  # trimmed so the name sits centred
 
 # Terminal image
 LINE_FS, LINE_CW = 16, 9.6
