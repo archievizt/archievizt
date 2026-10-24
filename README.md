@@ -9,7 +9,7 @@
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/terminal-dark.svg">
-  <img src="assets/terminal-light.svg" alt="A terminal prompt running whoami, show bgp summary, drift-keel backup run, git log and uptime" width="500">
+  <img src="assets/terminal-light.svg" alt="A terminal prompt showing what each project does" width="500">
 </picture>
 
 *Learning by building resilient systems from the ground up.*

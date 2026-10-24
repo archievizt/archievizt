@@ -21,11 +21,12 @@ HEADLINE = "Hey folks, I'm Archie"
 WAVE = "\U0001F44B"  # waving hand
 PROMPT = "archie@lab:~$"
 PAIRS = [
-    ("whoami", "network and security engineer since 2015"),
-    ("show bgp summary", "Established. The lab and Google Cloud are talking."),
-    ("drift-keel backup run", "drift detected on LAB-SW1. Not on my watch."),
-    ("git log --oneline -1", "agent proposed, human merged, CI applied"),
-    ("uptime", "stoic when it slips, stoked when it ships"),
+    ("whoami", "builds secure networks, cloud and AI guardrails"),
+    ("show bgp summary", "peers OPNsense and VyOS with Google Cloud over eBGP"),
+    ("terraform plan", "keeps the cloud side as code, zero destroys"),
+    ("triage --from grafana", "brings evidence, not verdicts"),
+    ("drift-keel compliance audit", "audits devices against STIG, changes nothing"),
+    ("git log --oneline -1", "agent drafts the change, a human approves it"),
 ]
 
 THEMES = {
@@ -116,9 +117,11 @@ def build_hello(theme: dict[str, str]) -> str:
 
 
 def build_terminal(theme: dict[str, str]) -> str:
+    """Each command and reply pair is centred as a block, so short pairs sit in the middle too."""
     css, body = [], []
-    px = X0 + (len(PROMPT) + 1) * LINE_CW
-    body.append(f'<text class="prompt" x="{X0}" y="{CMD_Y}">{escape(PROMPT)}</text>')
+    widest = max(max(len(PROMPT) + 1 + len(c), len(o)) for c, o in PAIRS) * LINE_CW
+    if widest > TERM_W - 2:
+        raise ValueError(f"a line is {widest:.0f}px wide; keep it under {TERM_W - 2}px (about 50 characters)")
 
     starts, t = [], 0.0
     for cmd, _ in PAIRS:
@@ -126,43 +129,60 @@ def build_terminal(theme: dict[str, str]) -> str:
         t += len(cmd) * TYPE_STEP + OUT_PAUSE + HOLD + GAP
     total = t
 
-    moves = ["0%{transform:translateX(0)}"]
+    moves = []
     for k, (cmd, out) in enumerate(PAIRS):
         s = starts[k]
         typed = s + len(cmd) * TYPE_STEP
         end = typed + OUT_PAUSE + HOLD
+        block = max(len(PROMPT) + 1 + len(cmd), len(out)) * LINE_CW
+        bx = (TERM_W - block) / 2
+        px = bx + (len(PROMPT) + 1) * LINE_CW
+
+        name = f"p{k}"
+        css.append(window_keyframes(name, s, end, total))
+        css.append(f".{name}{{animation:{name} {total:.3f}s linear {LOOP_DELAY:.3f}s infinite}}")
+        body.append(f'<text class="pc {name}" x="{bx:.1f}" y="{CMD_Y}">{escape(PROMPT)}</text>')
+
         for j, ch in enumerate(cmd):
-            moves.append(f"{pct(s + j * TYPE_STEP, total)}{{transform:translateX({j * LINE_CW:.1f}px)}}")
+            moves.append(f"{pct(s + j * TYPE_STEP, total)}{{transform:translateX({px + j * LINE_CW:.1f}px)}}")
             if ch == " ":
                 continue
             name = f"c{k}_{j}"
             css.append(window_keyframes(name, s + (j + 1) * TYPE_STEP, end, total))
             css.append(f".{name}{{animation:{name} {total:.3f}s linear {LOOP_DELAY:.3f}s infinite}}")
             body.append(f'<text class="cc {name}" x="{px + j * LINE_CW:.1f}" y="{CMD_Y}">{escape(ch)}</text>')
-        moves.append(f"{pct(typed, total)}{{transform:translateX({len(cmd) * LINE_CW:.1f}px)}}")
-        moves.append(f"{pct(end, total)}{{transform:translateX(0)}}")
+        moves.append(f"{pct(typed, total)}{{transform:translateX({px + len(cmd) * LINE_CW:.1f}px)}}")
+
         name = f"o{k}"
         css.append(window_keyframes(name, typed + OUT_PAUSE, end, total))
         css.append(f".{name}{{animation:{name} {total:.3f}s linear {LOOP_DELAY:.3f}s infinite}}")
-        body.append(f'<text class="oc {name}" x="{X0}" y="{OUT_Y}">{escape(out)}</text>')
-    moves.append("100%{transform:translateX(0)}")
+        body.append(f'<text class="oc {name}" x="{bx:.1f}" y="{OUT_Y}">{escape(out)}</text>')
 
-    css.append("@keyframes cmove{" + "".join(moves) + "}")
+    # The cursor is hidden in the gap between pairs and follows the typing inside each one.
+    first_x = moves[0].split("translateX(")[1].split("px")[0]
+    css.append("@keyframes cmove{0%{transform:translateX(" + first_x + "px)}" + "".join(moves) + "}")
     css.append(f".cur g{{animation:cmove {total:.3f}s steps(1,end) {LOOP_DELAY:.3f}s infinite}}")
     css.append(".cur rect{animation:blink 0.9s steps(1,end) infinite}")
+    vis = "".join(
+        f"{pct(starts[k], total)}{{opacity:1}}"
+        f"{pct(starts[k] + len(c) * TYPE_STEP + OUT_PAUSE + HOLD, total)}{{opacity:0}}"
+        for k, (c, _) in enumerate(PAIRS)
+    )
+    css.append("@keyframes cvis{0%{opacity:0}" + vis + "100%{opacity:0}}")
+    css.append(f".cur{{opacity:0;animation:cvis {total:.3f}s steps(1,end) {LOOP_DELAY:.3f}s infinite}}")
     body.append(
-        f'<g class="cur"><g><rect x="{px:.1f}" y="{CMD_Y - 13}" width="9" height="17" '
+        f'<g class="cur"><g><rect x="0" y="{CMD_Y - 13}" width="9" height="17" '
         f'fill="{theme["cursor"]}" opacity="0.85"/></g></g>'
     )
 
     base = (
         f"text{{font-family:{MONO};font-size:{LINE_FS}px;white-space:pre}}"
-        f".prompt{{fill:{theme['prompt']}}}"
+        f".pc{{fill:{theme['prompt']};opacity:0}}"
         f".cc{{fill:{theme['cmd']};opacity:0}}"
         f".oc{{fill:{theme['out']};opacity:0}}"
     )
     first = ",".join(f".c0_{j}" for j, ch in enumerate(PAIRS[0][0]) if ch != " ")
-    reduced = REDUCED.format(show=f".o0,{first}")
+    reduced = REDUCED.format(show=f".p0,.o0,{first}")
     title = " ".join(f"$ {c}: {o}." for c, o in PAIRS)
     return svg(TERM_W, TERM_H, title, base + COMMON + "".join(css) + reduced, body)
 
