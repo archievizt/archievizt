@@ -24,11 +24,11 @@ WAVE = "\U0001F44B"  # waving hand
 PROMPT = "archie@lab:~$"
 PAIRS = [
     ("whoami", "builds secure networks, cloud and AI guardrails"),
+    ("git checkout -b ai-secops", "currently exploring AI-driven security operations"),
     ("show bgp summary", "peers OPNsense and VyOS with Google Cloud over eBGP"),
     ("terraform plan", "keeps the cloud side as code, zero destroys"),
     ("triage --from grafana", "brings evidence, not verdicts"),
     ("drift-keel compliance audit", "audits devices against STIG, changes nothing"),
-    ("git log --oneline -1", "agent drafts the change, a human approves it"),
 ]
 
 THEMES = {

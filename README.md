@@ -24,7 +24,7 @@ Over a decade securing enterprise networks, now bringing my zero-trust habits to
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/terminal-dark.svg">
-  <img src="assets/terminal-light.svg" alt="What I'm into right now: secure networks with cloud and AI guardrails; OPNsense and VyOS peering with Google Cloud over eBGP; the cloud side kept in Terraform with zero destroys; a Grafana triage agent that brings evidence, not verdicts; Drift-Keel STIG audits that change nothing; agent-drafted changes that a human approves" width="500">
+  <img src="assets/terminal-light.svg" alt="What I'm into right now: secure networks with cloud and AI guardrails; currently exploring AI-driven security operations; OPNsense and VyOS peering with Google Cloud over eBGP; the cloud side kept in Terraform with zero destroys; a Grafana triage agent that brings evidence, not verdicts; Drift-Keel STIG audits that change nothing" width="500">
 </picture>
 
 <br>
